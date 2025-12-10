@@ -1,7 +1,7 @@
 import { Profesor } from "../entidades/Profesor";
 
 export interface IProfesorRepository {
- create(user: Profesor): Promise<Profesor>;
+  create(user: Profesor): Promise<Profesor>;
   findById(id: string): Promise<Profesor | null>;
   findByEmail(email: string): Promise<Profesor | null>;
   findAll(): Promise<Profesor[]>;

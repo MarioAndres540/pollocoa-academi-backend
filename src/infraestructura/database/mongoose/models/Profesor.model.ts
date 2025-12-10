@@ -6,7 +6,7 @@ export interface ProfesorDocument extends Omit<Profesor, 'id'>, Document {}
 const profesorSchema: Schema = new Schema<ProfesorDocument>(
   {
     nombre: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true, index: true  },
     password: { type: String, required: true },
     role: { type: String, enum: ['teacher', 'admin'], default: 'teacher' }
     },
@@ -15,6 +15,6 @@ const profesorSchema: Schema = new Schema<ProfesorDocument>(
         versionKey: false
     }
 );
-profesorSchema.index({ email: 1 });
+
 
 export const ProfesorModel = mongoose.model<ProfesorDocument>('Profesor', profesorSchema);

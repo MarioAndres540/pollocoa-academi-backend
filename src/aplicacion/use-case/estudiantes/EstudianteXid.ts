@@ -10,7 +10,7 @@ export class EstudianteXid {
     if (!student) {
       throw new Error('Estudiante no encontrado');
     }
-
+    console.log('student',student);
     return {
       id: student.id!,
       nombre: student.nombre,

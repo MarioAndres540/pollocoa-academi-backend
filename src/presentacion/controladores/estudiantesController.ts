@@ -6,6 +6,9 @@ import { ActualizarEstudiante } from '../../aplicacion/use-case/estudiantes/Actu
 import {CambioEstadoEstudiante} from '../../aplicacion/use-case/estudiantes/CambioEstadoEstudiante';
 import { EstudianteXid } from '../../aplicacion/use-case/estudiantes/EstudianteXid';
 import { TodosLosEstudiantes } from '../../aplicacion/use-case/estudiantes/TodosLosEstudiantes';
+import { ExcelExporter } from '../../infraestructura/exports/ExcelExporter';
+import { PDFExporter } from '../../infraestructura/exports/PDFExporter';
+import { ExportEstudiantes } from '../../aplicacion/use-case/estudiantes/ExportEstudiantes';
 
 export class EstudiantesController {
     async create(req: AuthRequest, res: Response): Promise<void> {
@@ -127,6 +130,63 @@ export class EstudiantesController {
       res.status(400).json({
         success: false,
         message: error.message || 'Error al cambiar estado del estudiante'
+      });
+    }
+  }
+
+  async exportExcel(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const { active } = req.query;
+      const onlyActive = active === 'true' ? true : active === 'false' ? false : undefined;
+
+      const studentRepository = RepositoryFactory.getStudentRepository();
+      const excelExporter = new ExcelExporter();
+      const pdfExporter = new PDFExporter();
+
+      const exportStudents = new ExportEstudiantes(
+        studentRepository,
+        excelExporter,
+        pdfExporter
+      );
+
+      const buffer = await exportStudents.executeExcel(onlyActive);
+
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename=estudiantes_${Date.now()}.xlsx`);
+      res.send(buffer);
+    } catch (error: any) {
+      res.status(400).json({
+        success: false,
+        message: error.message || 'Error al exportar estudiantes'
+      });
+    }
+  }
+
+  // Exportar estudiantes a PDF
+  async exportPDF(req: AuthRequest, res: Response): Promise<void> {
+    try {
+      const { active } = req.query;
+      const onlyActive = active === 'true' ? true : active === 'false' ? false : undefined;
+
+      const studentRepository = RepositoryFactory.getStudentRepository();
+      const excelExporter = new ExcelExporter();
+      const pdfExporter = new PDFExporter();
+
+      const exportStudents = new ExportEstudiantes(
+        studentRepository,
+        excelExporter,
+        pdfExporter
+      );
+
+      const buffer = await exportStudents.executePDF(onlyActive);
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=estudiantes_${Date.now()}.pdf`);
+      res.send(buffer);
+    } catch (error: any) {
+      res.status(400).json({
+        success: false,
+        message: error.message || 'Error al exportar estudiantes'
       });
     }
   }

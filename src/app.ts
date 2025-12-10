@@ -62,7 +62,6 @@ const apiLimiter = rateLimit({
     message: 'Demasiadas peticiones desde esta IP, por favor intenta más tarde'
   },
   skip: (req) => {
-    // Saltar rate limiting para rutas de socket.io y health check
     return req.path.startsWith('/socket.io/') || req.path === '/health';
   }
 });
@@ -92,7 +91,7 @@ app.use('/api/subjects', materiasRoutes);
 app.use('/api/grades', notasRoutes);
 
 // Ruta 404 para API
-app.use('/api/*', (req, res) => {
+app.use('/api/:any', (req, res) => {
   res.status(404).json({
     success: false,
     message: 'Ruta de API no encontrada'
@@ -108,7 +107,7 @@ initSocket(io);
 // Exportar función para iniciar el servidor
 export const startServer = async () => {
   try {
-    // Conectar a la base de datos
+    // CONECTAR A LA BASE DE DATOS AQUÍ - NO en otro lugar
     await connectDB();
     
     console.log(`

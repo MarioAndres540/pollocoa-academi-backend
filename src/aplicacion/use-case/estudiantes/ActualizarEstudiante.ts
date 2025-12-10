@@ -18,10 +18,10 @@ export class ActualizarEstudiante {
 
     // Preparar datos para actualizar
     const updateData: any = {};
-    if (data.nombre) updateData.firstName = data.nombre.trim();
-    if (data.apellido) updateData.lastName = data.apellido.trim();
+    if (data.nombre) updateData.nombre = data.nombre.trim();
+    if (data.apellido) updateData.apellido = data.apellido.trim();
     if (data.email) updateData.email = data.email.toLowerCase().trim();
-    if (data.numeroDocumento) updateData.documentNumber = data.numeroDocumento.trim();
+    if (data.numeroDocumento) updateData.numeroDocumento = data.numeroDocumento.trim();
 
     const updated = await this.studentRepository.update(id, updateData);
     if (!updated) {

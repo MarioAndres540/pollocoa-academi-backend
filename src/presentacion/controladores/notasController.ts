@@ -21,7 +21,7 @@ export class NotasController {
         studentRepository,
         subjectRepository
       );
-
+    
       const grade = await createGrade.execute(req.body);
 
       res.status(201).json({

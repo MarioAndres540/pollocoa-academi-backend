@@ -3,8 +3,8 @@ import { Profesor } from "../../../../dominio/entidades/Profesor";
 import { ProfesorModel } from "../models/Profesor.model";
 
 export class ProfesorRepository implements IProfesorRepository {
-   async create(Profesor: Profesor): Promise<Profesor> {
-    const created = await ProfesorModel.create(Profesor);
+   async create(profesorData: Profesor): Promise<Profesor> {
+    const created = await ProfesorModel.create(profesorData);
     return this.mapToEntity(created);
   }
 

@@ -5,40 +5,71 @@ import { JWTService } from "../../../infraestructura/seguridad/JWTService";
 import { RegisterDTO, AuthResponseDTO } from "../../dto/AuthDTO";
 
 export class Register {
-    constructor(
+  constructor(
     private userRepository: IProfesorRepository,
     private passwordService: PasswordService,
     private jwtService: JWTService
   ) {}
 
-  async execute(data: RegisterDTO): Promise<AuthResponseDTO> {
-    // Validar email
-    this.validateEmail(data.email);
-
-    // Validar contraseña
-    const passwordValidation = this.passwordService.validate(data.password);
-    if (!passwordValidation.valid) {
-      throw new Error(passwordValidation.errors.join(', '));
+  async execute(data: RegisterDTO): Promise<any> {
+    // VALIDACIÓN DE DATOS DE ENTRADA
+    if (!data.email || typeof data.email !== 'string') {
+      throw new Error('El email es requerido');
+    }
+    
+    if (!data.password || typeof data.password !== 'string') {
+      throw new Error('La contraseña es requerida');
+    }
+    
+    if (!data.nombre || typeof data.nombre !== 'string') {
+      throw new Error('El nombre es requerido');
     }
 
-    // Verificar que el email no esté registrado
-    const existingUser = await this.userRepository.findByEmail(data.email);
-    if (existingUser) {
+    // Trim y validación
+    const email = data.email.trim().toLowerCase();
+    const nombre = data.nombre.trim();
+    const password = data.password.trim();
+    
+    if (!email) {
+      throw new Error('El email no puede estar vacío');
+    }
+    
+    if (!nombre) {
+      throw new Error('El nombre no puede estar vacío');
+    }
+    
+    if (!password) {
+      throw new Error('La contraseña no puede estar vacía');
+    }
+    
+    if (password.length < 6) {
+      throw new Error('La contraseña debe tener al menos 6 caracteres');
+    }
+
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new Error('El email no tiene un formato válido');
+    }
+
+    // Verificar si el email ya existe
+    const existing = await this.userRepository.findByEmail(email);
+    if (existing) {
       throw new Error('El email ya está registrado');
     }
 
-    // Hash de la contraseña
-    const hashedPassword = await this.passwordService.hash(data.password);
+    // Hashear contraseña
+    const hashedPassword = await this.passwordService.hash(password);
 
-    // Crear usuario
-    const user: Profesor = {
-      email: data.email.toLowerCase().trim(),
+    // Crear profesor
+    const profesor: Profesor = {
+      nombre: nombre,
+      email: email,
       password: hashedPassword,
-      nombre: data.nombre.trim(),
       role: data.role || 'teacher'
     };
 
-    const created = await this.userRepository.create(user);
+    const created = await this.userRepository.create(profesor);
 
     // Generar token
     const token = this.jwtService.generateToken({
@@ -48,20 +79,13 @@ export class Register {
     });
 
     return {
-      token,
       user: {
-        id: created.id!,
-        email: created.email,
+        id: created.id,
         nombre: created.nombre,
+        email: created.email,
         role: created.role
-      }
+      },
+      token
     };
-  }
-
-  private validateEmail(email: string): void {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      throw new Error('Email inválido');
-    }
   }
 }

@@ -42,10 +42,10 @@ export class EstudiantesRepository implements IEstudiantesRepository {
     private mapToEntity(doc: any): Estudiante {
         return {
             id: doc._id.toString(),
-            nombre: doc.firstName,
-            apellido: doc.lastName,
+            nombre: doc.nombre,
+            apellido: doc.apellido,
             email: doc.email,
-            numeroDocumento: doc.documentNumber,
+            numeroDocumento: doc.numeroDocumento,
             isActive: doc.isActive,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt
