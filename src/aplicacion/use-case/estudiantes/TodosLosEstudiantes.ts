@@ -1,7 +1,7 @@
 import { IEstudiantesRepository } from "../../../dominio/repositorios/IEstudiantesRepository";
 import { EstudianteResponseDTO } from "../../dto/EstudianteDTO";
 
-export class CambioEstadoEstudiante {
+export class TodosLosEstudiantes {
     constructor(private studentRepository: IEstudiantesRepository) {}
 
   async execute(onlyActive?: boolean): Promise<EstudianteResponseDTO[]> {
