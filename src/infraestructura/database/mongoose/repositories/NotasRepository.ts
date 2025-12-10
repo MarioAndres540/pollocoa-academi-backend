@@ -15,22 +15,22 @@ export class NotasRepository implements INotasRepository {
     return Nota ? this.mapToEntity(Nota) : null;
   }
 
-  async findByStudent(studentId: string): Promise<Nota[]> {
-    const Notas = await NotaModel.find({ studentId })
+  async findByStudent(estudianteId: string): Promise<Nota[]> {
+    const Notas = await NotaModel.find({ estudianteId })
       .populate('materiaId', 'nombre codigo isActive')
       .sort({ createdAt: -1 });
     return Notas.map(this.mapToEntity);
   }
 
-  async findBySubject(subjectId: string): Promise<Nota[]> {
-    const Notas = await NotaModel.find({ subjectId })
+  async findBySubject(materiaId: string): Promise<Nota[]> {
+    const Notas = await NotaModel.find({ materiaId })
       .populate('estudianteId', 'nombre apellido email isActive')
       .sort({ createdAt: -1 });
     return Notas.map(this.mapToEntity);
   }
 
-  async findByStudentAndSubject(studentId: string, subjectId: string): Promise<Nota[]> {
-    const Notas = await NotaModel.find({ studentId, subjectId })
+  async findByStudentAndSubject(estudianteId: string, materiaId: string): Promise<Nota[]> {
+    const Notas = await NotaModel.find({ estudianteId, materiaId })
       .populate('estudianteId', 'nombre apellido email')
       .populate('materiaId', 'nombre codigo')
       .sort({ createdAt: -1 });

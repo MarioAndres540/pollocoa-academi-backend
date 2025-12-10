@@ -15,7 +15,7 @@ export class ActualizarNota {
     }
 
     const updateData: any = {};
-    if (data.valor !== undefined) updateData.value = data.valor;
+    if (data.valor !== undefined) updateData.valor = data.valor;
     if (data.description !== undefined) updateData.description = data.description.trim();
 
     const updated = await this.gradeRepository.update(id, updateData);
