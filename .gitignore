@@ -1,0 +1,9 @@
+/dist
+/dist.zip
+/tmp
+/out-tsc
+/bazel-out
+
+/node_modules
+nom-debug.log
+yarn-error.log
