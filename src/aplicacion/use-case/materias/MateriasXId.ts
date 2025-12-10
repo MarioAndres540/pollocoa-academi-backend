@@ -1,14 +1,17 @@
 import { IMateriasRepository } from "../../../dominio/repositorios/IMateriasRepository";
 import { MateriaResponseDTO } from "../../dto/MateriaDTO";
 
-export class TodasLasMaterias {
+export class MateriasXId {
     constructor(private subjectRepository: IMateriasRepository) {}
 
-  async execute(onlyActive?: boolean): Promise<MateriaResponseDTO[]> {
-    const filters = onlyActive !== undefined ? { isActive: onlyActive } : undefined;
-    const subjects = await this.subjectRepository.findAll(filters);
+  async execute(id: string): Promise<MateriaResponseDTO> {
+    const subject = await this.subjectRepository.findById(id);
+    
+    if (!subject) {
+      throw new Error('Materia no encontrada');
+    }
 
-    return subjects.map(subject => ({
+    return {
       id: subject.id!,
       nombre: subject.nombre,
       codigo: subject.codigo,
@@ -16,6 +19,6 @@ export class TodasLasMaterias {
       isActive: subject.isActive,
       createdAt: subject.createdAt,
       updatedAt: subject.updatedAt
-    }));
+    };
   }
 }

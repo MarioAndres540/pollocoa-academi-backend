@@ -3,7 +3,6 @@ import cors from 'cors';
 import { createServer } from 'http';
 import {Server} from "socket.io";
 import { connectDB } from '../src/configuracion/db';
-;
 import {initSocket} from "./infraestructura/sockets/SocketService";
 
 export const app = express();

@@ -1,14 +1,17 @@
 import { IEstudiantesRepository } from "../../../dominio/repositorios/IEstudiantesRepository";
 import { EstudianteResponseDTO } from "../../dto/EstudianteDTO";
 
-export class CambioEstadoEstudiante {
+export class EstudianteXid {
     constructor(private studentRepository: IEstudiantesRepository) {}
 
-  async execute(onlyActive?: boolean): Promise<EstudianteResponseDTO[]> {
-    const filters = onlyActive !== undefined ? { isActive: onlyActive } : undefined;
-    const students = await this.studentRepository.findAll(filters);
+  async execute(id: string): Promise<EstudianteResponseDTO> {
+    const student = await this.studentRepository.findById(id);
+    
+    if (!student) {
+      throw new Error('Estudiante no encontrado');
+    }
 
-    return students.map(student => ({
+    return {
       id: student.id!,
       nombre: student.nombre,
       apellido: student.apellido,
@@ -17,6 +20,6 @@ export class CambioEstadoEstudiante {
       isActive: student.isActive,
       createdAt: student.createdAt,
       updatedAt: student.updatedAt
-    }));
+    };
   }
 }
