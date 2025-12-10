@@ -29,6 +29,7 @@ export const io = new Server(httpServer, {
   transports: ['websocket', 'polling']
 });
 
+
 // Middlewares de seguridad
 app.use(helmet({
   contentSecurityPolicy: {
@@ -45,10 +46,11 @@ app.use(helmet({
 
 // Configurar CORS
 app.use(cors({
-  origin: config.cors.origin || "*",
+  origin: config.cors.origin || ["http://localhost:4200", "http://localhost:3000"],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Length', 'X-Total-Count']
 }));
 
 // Rate limiting para API REST (no aplicar a sockets)

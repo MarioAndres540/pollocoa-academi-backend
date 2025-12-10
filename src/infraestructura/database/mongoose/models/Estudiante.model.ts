@@ -17,7 +17,7 @@ const estudianteSchema: Schema = new Schema<EstudianteDocument>(
     }
 );
 
-estudianteSchema.index({ email: 1 });
+
 estudianteSchema.index({ numeroDocumento: 1 });
 estudianteSchema.index({ isActive: 1 });
 

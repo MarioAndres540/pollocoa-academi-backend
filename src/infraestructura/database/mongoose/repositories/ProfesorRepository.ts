@@ -44,7 +44,7 @@ export class ProfesorRepository implements IProfesorRepository {
       id: doc._id.toString(),
       email: doc.email,
       password: '', // No exponemos el password
-      nombre: doc.name,
+      nombre: doc.nombre,
       role: doc.role,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt
@@ -57,7 +57,7 @@ export class ProfesorRepository implements IProfesorRepository {
       id: doc._id.toString(),
       email: doc.email,
       password: doc.password, // Incluimos el hash para validación
-      nombre: doc.name,
+      nombre: doc.nombre,
       role: doc.role,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt
