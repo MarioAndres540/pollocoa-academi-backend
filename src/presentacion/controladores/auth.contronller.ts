@@ -6,7 +6,7 @@ import { Register } from '../../aplicacion/use-case/auth/Register';
 import { Login } from '../../aplicacion/use-case/auth/Login';
 
 export class AuthController {
-    // Registro de usuario
+  // Registro de usuario
   async register(req: Request, res: Response): Promise<void> {
     try {
       const userRepository = RepositoryFactory.getUserRepository();
@@ -40,6 +40,14 @@ export class AuthController {
       const login = new Login(userRepository, passwordService, jwtService);
 
       const result = await login.execute(req.body);
+
+      // Configurar cookie
+      res.cookie('token', result.token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 24 * 60 * 60 * 1000 // 24 horas
+      });
 
       res.status(200).json({
         success: true,
@@ -84,5 +92,12 @@ export class AuthController {
         message: error.message || 'Error al obtener perfil'
       });
     }
+  }
+  // Verificar autenticación (para el frontend)
+  async checkAuth(req: any, res: Response): Promise<void> {
+    res.status(200).json({
+      valid: true,
+      user: req.user
+    });
   }
 }

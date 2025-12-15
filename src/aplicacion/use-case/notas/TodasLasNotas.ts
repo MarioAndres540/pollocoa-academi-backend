@@ -1,10 +1,10 @@
 import { INotasRepository } from "../../../dominio/repositorios/INotasRepository";
-import { NotaResponseDTO } from "../../dto/NotaDTO";
+import { NotaResponseDTO, NotaWithDetailsDTO } from "../../dto/NotaDTO";
 
 export class TodasLasNotas {
-    constructor(private gradeRepository: INotasRepository) {}
+  constructor(private gradeRepository: INotasRepository) { }
 
-  async execute(): Promise<NotaResponseDTO[]> {
+  async execute(): Promise<NotaWithDetailsDTO[]> {
     const grades = await this.gradeRepository.findAll();
 
     return grades.map(grade => ({
@@ -14,7 +14,9 @@ export class TodasLasNotas {
       valor: grade.valor,
       description: grade.description,
       createdAt: grade.createdAt,
-      updatedAt: grade.updatedAt
+      updatedAt: grade.updatedAt,
+      estudiante: grade.estudiante,
+      materia: grade.materia
     }));
   }
 }

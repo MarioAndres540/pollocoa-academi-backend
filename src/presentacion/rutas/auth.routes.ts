@@ -12,5 +12,6 @@ router.post('/login', asyncHandler(authController.login.bind(authController)));
 
 // Rutas protegidas
 router.get('/profile', authMiddleware, asyncHandler(authController.getProfile.bind(authController)));
+router.get('/check', authMiddleware, asyncHandler(authController.checkAuth.bind(authController)));
 
 export default router;

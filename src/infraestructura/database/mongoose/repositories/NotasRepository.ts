@@ -3,14 +3,14 @@ import { INotasRepository } from "../../../../dominio/repositorios/INotasReposit
 import { NotaModel } from "../models/Nota.model";
 
 export class NotasRepository implements INotasRepository {
-     async create(Nota: Nota): Promise<Nota> {
+  async create(Nota: Nota): Promise<Nota> {
     const created = await NotaModel.create(Nota);
     return this.mapToEntity(created);
   }
 
   async findById(id: string): Promise<Nota | null> {
     const Nota = await NotaModel.findById(id)
-      .populate('estudianteId', 'nombre apellido email')
+      .populate('estudianteId', 'nombre apellido ')
       .populate('materiaId', 'nombre codigo');
     return Nota ? this.mapToEntity(Nota) : null;
   }
@@ -24,14 +24,14 @@ export class NotasRepository implements INotasRepository {
 
   async findBySubject(materiaId: string): Promise<Nota[]> {
     const Notas = await NotaModel.find({ materiaId })
-      .populate('estudianteId', 'nombre apellido email isActive')
+      .populate('estudianteId', 'nombre apellido  isActive')
       .sort({ createdAt: -1 });
     return Notas.map(this.mapToEntity);
   }
 
   async findByStudentAndSubject(estudianteId: string, materiaId: string): Promise<Nota[]> {
     const Notas = await NotaModel.find({ estudianteId, materiaId })
-      .populate('estudianteId', 'nombre apellido email')
+      .populate('estudianteId', 'nombre apellido ')
       .populate('materiaId', 'nombre codigo')
       .sort({ createdAt: -1 });
     return Notas.map(this.mapToEntity);
@@ -53,7 +53,7 @@ export class NotasRepository implements INotasRepository {
     )
       .populate('estudianteId', 'nombre codigo email')
       .populate('materiaId', 'nombre codigo');
-    
+
     return updated ? this.mapToEntity(updated) : null;
   }
 
@@ -70,7 +70,18 @@ export class NotasRepository implements INotasRepository {
       valor: doc.valor,
       description: doc.description,
       createdAt: doc.createdAt,
-      updatedAt: doc.updatedAt
+      updatedAt: doc.updatedAt,
+      estudiante: typeof doc.estudianteId === 'object' ? {
+        id: doc.estudianteId._id.toString(),
+        nombre: doc.estudianteId.nombre,
+        apellido: doc.estudianteId.apellido,
+        email: doc.estudianteId.email
+      } : undefined,
+      materia: typeof doc.materiaId === 'object' ? {
+        id: doc.materiaId._id.toString(),
+        nombre: doc.materiaId.nombre,
+        codigo: doc.materiaId.codigo
+      } : undefined
     };
   }
 }

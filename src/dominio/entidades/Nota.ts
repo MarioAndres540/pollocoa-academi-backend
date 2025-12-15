@@ -6,4 +6,15 @@ export interface Nota {
   description?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  estudiante?: {
+    id: string;
+    nombre: string;
+    apellido: string;
+    email: string;
+  };
+  materia?: {
+    id: string;
+    nombre: string;
+    codigo: string;
+  };
 }

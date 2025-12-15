@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
 import { createServer } from 'http';
 import { Server } from "socket.io";
 import { config } from './configuracion/env';
@@ -74,6 +75,7 @@ app.use('/api', apiLimiter);
 // Body parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Rutas de API
 app.get('/health', (req, res) => {
@@ -111,7 +113,7 @@ export const startServer = async () => {
   try {
     // CONECTAR A LA BASE DE DATOS AQUÍ - NO en otro lugar
     await connectDB();
-    
+
     console.log(`
 ╔══════════════════════════════════════════════════╗
 ║  🚀 Server running on port ${config.port}                ║
@@ -122,7 +124,7 @@ export const startServer = async () => {
 ║  🩺 Health: http://localhost:${config.port}/health     ║
 ╚══════════════════════════════════════════════════╝
     `);
-    
+
     return httpServer;
   } catch (error) {
     console.error('❌ Error starting server:', error);

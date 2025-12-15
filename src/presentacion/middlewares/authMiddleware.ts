@@ -19,8 +19,15 @@ export const authMiddleware = (
   try {
     // Obtener token del header
     const authHeader = req.headers.authorization;
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    let token: string | undefined;
+
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7);
+    } else if (req.cookies && req.cookies.token) {
+      token = req.cookies.token;
+    }
+
+    if (!token) {
       res.status(401).json({
         success: false,
         message: 'Token no proporcionado'
@@ -28,11 +35,9 @@ export const authMiddleware = (
       return;
     }
 
-    const token = authHeader.substring(7); // Remover "Bearer "
-
-    // Verificar token
+    // Verificar token (el token variable ya contiene el token limpio)
     const decoded = jwtService.verifyToken(token);
-    
+
     if (!decoded) {
       res.status(401).json({
         success: false,
